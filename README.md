@@ -29,3 +29,10 @@ The trade-off: this is non-cryptographic hashing (FNV-1a) over the subject's UTF
 Adding a bucket does *not* leave every existing subject where it was. Going through a unit interval means most subjects stay put when you grow the number of buckets, but some must move — that is the whole point of adding a bucket. If you need perfect stickiness when reshaping an experiment, keep a per-subject assignment table instead of hashing.
 
 Weights are positive finite numbers only. `0`, negatives, `NaN`, `inf`, and `bool` (which is a subclass of `int` in Python) are all rejected. The empty string is a legal subject; it hashes to a definite value and buckets accordingly.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
